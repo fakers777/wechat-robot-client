@@ -80,6 +80,8 @@
 
 - 支持A16登录
 
+- Mac 扫码登录支持自动过滑块。
+
 ## 使用方式
 
 **自部署**
@@ -344,7 +346,7 @@ services:
 
 ## 官方交流群
 
-<img src="https://img.houhoukang.com/char-room-qrcode.jpg?v=20250907" alt="官方交流群" width="300">
+<img src="https://img.houhoukang.com/char-room-qrcode.jpg?v=20250916" alt="官方交流群" width="300">
 
 ## 效果展示
 

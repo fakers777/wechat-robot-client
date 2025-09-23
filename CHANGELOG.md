@@ -1,5 +1,61 @@
 # 更新日志
 
+## [1.4.3] - 2025/09/22
+
+### 新特性
+
+- iPad 伪装登录。
+
+## [1.4.2] - 2025/09/21
+
+### BUG 修复
+
+- 修复点歌接口挂了的问题
+
+- 修复发送AI消息获取音色接口挂了的问题
+
+- 修复扫码登录UUID检测异常的问题
+
+## [1.4.1] - 2025/09/21
+
+### 新特性
+
+- Mac 扫码登录支持自动过滑块。
+
+> 本次更新包含破坏性更新
+>
+> `wechat-robot-admin-backend`服务需要新增两个环境变量，否则服务会启动失败
+>
+> - SLIDER_SERVER_BASE_URL=http://wechat-slider:9000
+>
+> - SLIDER_TOKEN=xxxxxxx # 滑块验证码服务密钥，请加入官方交流群获取
+>
+
+## [1.4.0] - 2025/09/20
+
+### 新特性
+
+- ~~Mac 扫码登录支持手动过滑块。~~
+
+> 本次更新包含破坏性更新
+>
+> `wechat-robot-admin-backend`服务需要新增两个环境变量，否则服务会启动失败
+>
+> - ~~SLIDER_VERIFY_URL=http://wechat-slider:9000/api/v1/slider-verify-html~~
+>
+> - ~~SLIDER_VERIFY_SUBMIT_URL=http://wechat-slider:9000/api/v1/security-verify~~
+>
+
+## [1.3.0] - 2025/09/19
+
+### 体验性优化
+
+- 抖音视频会同时发送链接和视频。
+
+### BUG 修复
+
+- 修复 Mac 登录异常的问题。
+
 ## [1.2.0] - 2025/09/10
 
 ### 体验性优化
