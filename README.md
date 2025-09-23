@@ -327,7 +327,7 @@ services:
       WECHAT_PORT: 9000
       REDIS_HOST: wechat-admin-redis
       REDIS_PORT: 6379
-      REDIS_PASSWORD: 123456
+      REDIS_PASSWORD: 
       REDIS_DB: 0
       WECHAT_CLIENT_HOST: 127.0.0.1:9001
 ```
