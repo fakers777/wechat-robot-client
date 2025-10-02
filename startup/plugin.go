@@ -24,4 +24,24 @@ func RegisterMessagePlugin() {
 	vars.MessagePlugin.Register(plugins.NewFriendAIDrawingPlugin())
 	// 群聊拍一拍交互插件
 	vars.MessagePlugin.Register(plugins.NewPatPlugin())
+
+	// === 新增功能插件 ===
+	// Apilot多功能插件（星座运势、热榜、天气等）
+	vars.MessagePlugin.Register(plugins.NewApilotPlugin())
+	// 京东积存金价格查询插件
+	vars.MessagePlugin.Register(plugins.NewJdjcjPlugin())
+	// KFC相关插件
+	vars.MessagePlugin.Register(plugins.NewKFCPlugin())
+	vars.MessagePlugin.Register(plugins.NewKFCStoryPlugin())
+	vars.MessagePlugin.Register(plugins.NewKFCMenuPlugin())
+	vars.MessagePlugin.Register(plugins.NewKFCWenanPlugin())
+	// 土味情话插件
+	vars.MessagePlugin.Register(plugins.NewLovePlugin())
+	vars.MessagePlugin.Register(plugins.NewLoveStoryPlugin())
+	vars.MessagePlugin.Register(plugins.NewLoveAdvicePlugin())
+	vars.MessagePlugin.Register(plugins.NewLoveTestPlugin())
+	// 网易云音乐插件
+	vars.MessagePlugin.Register(plugins.NewNeteasyPlugin())
+	// 图像识别插件（iPad版本）
+	vars.MessagePlugin.Register(plugins.NewImageRecognitionIPadPlugin())
 }
