@@ -24,6 +24,8 @@ func RegisterMessagePlugin() {
 	vars.MessagePlugin.Register(plugins.NewFriendAIDrawingPlugin())
 	// 群聊拍一拍交互插件
 	vars.MessagePlugin.Register(plugins.NewPatPlugin())
+	// 图片自动上传插件
+	vars.MessagePlugin.Register(plugins.NewImageAutoUploadPlugin())
 
 	// === 新增功能插件 ===
 	// Apilot多功能插件（星座运势、热榜、天气等）
