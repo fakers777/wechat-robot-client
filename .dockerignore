@@ -1,3 +1,48 @@
 .git
 .vscode
 .github
+# 忽略不必要的文件
+.git
+.gitignore
+README.md
+Dockerfile
+.dockerignore
+
+# 忽略日志文件
+*.log
+logs/
+
+# 忽略缓存和临时文件
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# 忽略IDE文件
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 忽略大文件或不需要的文件
+*.db
+*.sqlite3
+*.tar.gz
+*.zip
+
+# 忽略测试文件
+test/
+tests/
+*.test
+
+# 忽略node_modules（如果有）
+node_modules/
+
+# 忽略上传文件等
+uploads/
+temp/
+tmp/
