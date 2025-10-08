@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"mime/multipart"
 	"net"
 	"net/http"
@@ -346,12 +347,25 @@ func (c *Client) Logout(wxid string) (err error) {
 
 // AutoHeartBeat 自动心跳，包括自动同步消息
 func (c *Client) AutoHeartBeat(wxid string) (err error) {
+	log.Printf("Client.AutoHeartBeat() 开始执行，wxid: %s", wxid)
 	var result ClientResponse[struct{}]
+	url := fmt.Sprintf("%s%s", c.Domain.BasePath(), LoginAutoHeartBeat)
+	log.Printf("请求URL: %s", url)
 	_, err = c.client.R().
 		SetResult(&result).
 		SetQueryParam("wxid", wxid).
-		Post(fmt.Sprintf("%s%s", c.Domain.BasePath(), LoginAutoHeartBeat))
+		Post(url)
+	if err != nil {
+		log.Printf("AutoHeartBeat HTTP请求失败: %v", err)
+		return err
+	}
+	log.Printf("AutoHeartBeat HTTP请求成功，检查响应...")
 	err = result.CheckError(err)
+	if err != nil {
+		log.Printf("AutoHeartBeat 响应检查失败: %v", err)
+		return err
+	}
+	log.Printf("Client.AutoHeartBeat() 执行成功")
 	return
 }
 

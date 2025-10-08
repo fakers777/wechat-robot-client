@@ -19,10 +19,21 @@ func LoadConfig() error {
 func loadEnvConfig() {
 	// 本地开发模式
 	isDevMode := strings.ToLower(os.Getenv("GO_ENV")) == "dev"
+	log.Printf("[DEBUG] GO_ENV: %s, isDevMode: %v", os.Getenv("GO_ENV"), isDevMode)
 	if isDevMode {
+		// 尝试加载 .env 文件
 		err := godotenv.Load()
 		if err != nil {
-			log.Fatal("加载本地环境变量失败，请检查是否存在 .env 文件")
+			log.Printf("[DEBUG] 尝试加载 .env 文件失败: %v", err)
+			// 如果 .env 文件不存在，尝试加载 localfile.env
+			err = godotenv.Load("localfile.env")
+			if err != nil {
+				log.Printf("[DEBUG] 尝试加载 localfile.env 文件失败: %v", err)
+				log.Fatal("加载本地环境变量失败，请检查是否存在 .env 或 localfile.env 文件")
+			}
+			log.Printf("[DEBUG] 成功加载 localfile.env 文件")
+		} else {
+			log.Printf("[DEBUG] 成功加载 .env 文件")
 		}
 	}
 
@@ -43,6 +54,11 @@ func loadEnvConfig() {
 	vars.MysqlSettings.Db = os.Getenv("ROBOT_CODE")
 	vars.MysqlSettings.AdminDb = os.Getenv("MYSQL_ADMIN_DB")
 	vars.MysqlSettings.Schema = os.Getenv("MYSQL_SCHEMA")
+
+	// 打印MySQL配置信息（隐藏密码）
+	log.Printf("[DEBUG] MySQL配置 - Host: %s, Port: %s, User: %s, Db: %s, AdminDb: %s",
+		vars.MysqlSettings.Host, vars.MysqlSettings.Port, vars.MysqlSettings.User,
+		vars.MysqlSettings.Db, vars.MysqlSettings.AdminDb)
 
 	// redis
 	vars.RedisSettings.Host = os.Getenv("REDIS_HOST")
