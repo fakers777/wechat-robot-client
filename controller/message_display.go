@@ -58,7 +58,7 @@ func FormatMessageForDisplay(msg robot.Message) MessageDisplayInfo {
 	switch msgType {
 	case model.MsgTypeText:
 		displayInfo.TypeDesc = "文本消息"
-		displayInfo.Content = truncateText(content, 200)
+		displayInfo.Content = truncateText(content, 500)
 
 	case model.MsgTypeImage:
 		displayInfo.TypeDesc = "图片消息"
@@ -126,7 +126,7 @@ func FormatMessageForDisplay(msg robot.Message) MessageDisplayInfo {
 
 	default:
 		displayInfo.TypeDesc = "未知消息类型"
-		displayInfo.Content = truncateText(content, 100)
+		displayInfo.Content = truncateText(content, 200)
 	}
 
 	// 检查是否被截断

@@ -40,7 +40,7 @@ func (ct *WechatServerCallback) SyncMessageCallback(c *gin.Context) {
 		log.Printf("发送者: %s", *msg.FromUserName.String)
 		log.Printf("接收者: %s", *msg.ToUserName.String)
 		log.Printf("创建时间: %d", msg.CreateTime)
-		log.Printf("消息来源: %s", msg.MsgSource)
+		//log.Printf("消息来源: %s", msg.MsgSource)
 		log.Printf("状态: %d", msg.Status)
 
 		// 使用优化的消息显示

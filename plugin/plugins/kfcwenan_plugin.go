@@ -41,7 +41,7 @@ func (p *KFCWenanPlugin) GetName() string {
 
 // GetLabels 获取插件标签
 func (p *KFCWenanPlugin) GetLabels() []string {
-	return []string{"kfc", "wenan", "fun", "thursday"}
+	return []string{"text", "kfc", "wenan", "fun", "thursday"}
 }
 
 // PreAction 前置处理
@@ -57,7 +57,7 @@ func (p *KFCWenanPlugin) PostAction(ctx *plugin.MessageContext) {
 // Run 主要逻辑
 func (p *KFCWenanPlugin) Run(ctx *plugin.MessageContext) bool {
 	content := strings.ToLower(strings.TrimSpace(ctx.MessageContent))
-	
+
 	// 检查是否是KFC相关命令
 	if content == "kfc" || content == "疯狂星期四" {
 		result := p.getKFCWenan()
@@ -68,7 +68,7 @@ func (p *KFCWenanPlugin) Run(ctx *plugin.MessageContext) bool {
 		}
 		return true
 	}
-	
+
 	// 检查是否是舔狗相关命令
 	if content == "舔狗" {
 		result := p.getDogWenan()
@@ -79,7 +79,7 @@ func (p *KFCWenanPlugin) Run(ctx *plugin.MessageContext) bool {
 		}
 		return true
 	}
-	
+
 	return false
 }
 
@@ -94,7 +94,7 @@ func (p *KFCWenanPlugin) loadConfig() {
 		}
 		return
 	}
-	
+
 	json.Unmarshal(data, &p.config)
 }
 
@@ -126,21 +126,21 @@ func (p *KFCWenanPlugin) makeAPIRequest(apiURL string) string {
 	if err != nil {
 		return ""
 	}
-	
+
 	// 添加参数
 	params := url.Values{}
 	params.Set("type", "json")
 	u.RawQuery = params.Encode()
-	
+
 	// 创建请求
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		return ""
 	}
-	
+
 	// 设置请求头
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	
+
 	// 发送请求
 	client := &http.Client{Timeout: 5 * time.Second}
 	resp, err := client.Do(req)
@@ -148,29 +148,29 @@ func (p *KFCWenanPlugin) makeAPIRequest(apiURL string) string {
 		return ""
 	}
 	defer resp.Body.Close()
-	
+
 	// 检查响应状态
 	if resp.StatusCode != 200 {
 		return ""
 	}
-	
+
 	// 读取响应
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return ""
 	}
-	
+
 	// 解析响应
 	var apiResp APIResponse
 	err = json.Unmarshal(body, &apiResp)
 	if err != nil {
 		return ""
 	}
-	
+
 	// 检查响应状态
 	if apiResp.Code == 200 && apiResp.Text != "" {
 		return apiResp.Text
 	}
-	
+
 	return ""
 }

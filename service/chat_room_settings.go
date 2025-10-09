@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"log"
 	"regexp"
 	"strings"
 	"wechat-robot-client/interface/settings"
@@ -40,13 +41,37 @@ func (s *ChatRoomSettingsService) InitByMessage(message *model.Message) error {
 	s.Message = message
 	globalSettings, err := s.gsRespo.GetGlobalSettings()
 	if err != nil {
+		log.Printf("获取全局设置失败: %v", err)
 		return err
 	}
 	s.globalSettings = globalSettings
+
 	chatRoomSettings, err := s.crsRespo.GetChatRoomSettings(message.FromWxID)
 	if err != nil {
+		log.Printf("获取群聊设置失败: %v", err)
 		return err
 	}
+
+	// 如果群聊设置不存在，创建默认设置
+	if chatRoomSettings == nil {
+		log.Printf("群聊 %s 设置不存在，创建默认设置", message.FromWxID)
+		aiEnabled := true
+		aiTrigger := "AI"
+		chatRoomSettings = &model.ChatRoomSettings{
+			ChatRoomID:    message.FromWxID,
+			ChatAIEnabled: &aiEnabled,
+			ChatAITrigger: &aiTrigger,
+		}
+		// 保存默认设置到数据库
+		err = s.crsRespo.Create(chatRoomSettings)
+		if err != nil {
+			log.Printf("保存默认群聊设置失败: %v", err)
+			// 即使保存失败，也继续使用默认设置
+		} else {
+			log.Printf("成功创建群聊 %s 的默认设置", message.FromWxID)
+		}
+	}
+
 	s.chatRoomSettings = chatRoomSettings
 	return nil
 }

@@ -50,7 +50,7 @@ func (p *NeteasyPlugin) GetName() string {
 
 // GetLabels 获取插件标签
 func (p *NeteasyPlugin) GetLabels() []string {
-	return []string{"neteasy", "video", "download", "netease"}
+	return []string{"text", "neteasy", "video", "download", "netease"}
 }
 
 // PreAction 前置处理
