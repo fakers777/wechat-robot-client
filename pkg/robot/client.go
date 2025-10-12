@@ -130,16 +130,29 @@ func (c *Client) LoginTwiceAutoAuth(wxid string) (err error) {
 	return
 }
 
-func (c *Client) AwakenLogin(wxid string) (resp QrCode, err error) {
+func (c *Client) AwakenLogin(wxid string, proxy *ProxyInfo) (resp QrCode, err error) {
 	var result ClientResponse[QrCode]
 	var httpResp *resty.Response
+
+	// 构建请求体，包含代理信息
+	requestBody := AwakenLoginRequest{
+		Wxid: wxid,
+	}
+	if proxy != nil {
+		requestBody.Proxy = *proxy
+		log.Printf("[AwakenLogin] 使用代理: %s, 用户名: %s", proxy.ProxyIp, proxy.ProxyUser)
+	} else {
+		log.Printf("[AwakenLogin] 未使用代理")
+	}
+
+	url := fmt.Sprintf("%s%s", c.Domain.BasePath(), LoginAwaken)
+	log.Printf("[AwakenLogin] 请求URL: %s", url)
+
 	httpResp, err = c.client.R().
 		SetHeader("Content-Type", "application/json").
-		SetBody(AwakenLoginRequest{
-			Wxid: wxid,
-		}).
+		SetBody(requestBody).
 		SetResult(&result).
-		Post(fmt.Sprintf("%s%s", c.Domain.BasePath(), LoginAwaken))
+		Post(url)
 	if err = result.CheckError(err); err != nil {
 		return
 	}
@@ -151,17 +164,35 @@ func (c *Client) AwakenLogin(wxid string) (resp QrCode, err error) {
 	return
 }
 
-func (c *Client) GetQrCode(loginType, deviceId, deviceName string) (resp GetQRCode, err error) {
+// AwakenLoginCompat 兼容性方法，不使用代理
+func (c *Client) AwakenLoginCompat(wxid string) (resp QrCode, err error) {
+	return c.AwakenLogin(wxid, nil)
+}
+
+func (c *Client) GetQrCode(loginType, deviceId, deviceName string, proxy *ProxyInfo) (resp GetQRCode, err error) {
 	var result ClientResponse[GetQRCode]
+
+	// 构建请求体，包含代理信息
+	requestBody := LoginGetQRRequest{
+		DeviceID:   deviceId,
+		DeviceName: deviceName,
+		LoginType:  loginType,
+	}
+	if proxy != nil {
+		requestBody.Proxy = *proxy
+		log.Printf("[GetQrCode] 使用代理: %s, 用户名: %s", proxy.ProxyIp, proxy.ProxyUser)
+	} else {
+		log.Printf("[GetQrCode] 未使用代理")
+	}
+
+	url := fmt.Sprintf("%s%s", c.Domain.BasePath(), LoginGetQR)
+	log.Printf("[GetQrCode] 请求URL: %s", url)
+
 	_, err = c.client.R().
 		SetHeader("Content-Type", "application/json").
-		SetBody(LoginGetQRRequest{
-			DeviceID:   deviceId,
-			DeviceName: deviceName,
-			LoginType:  loginType,
-		}).
+		SetBody(requestBody).
 		SetResult(&result).
-		Post(fmt.Sprintf("%s%s", c.Domain.BasePath(), LoginGetQR))
+		Post(url)
 	if err = result.CheckError(err); err != nil {
 		return
 	}
@@ -170,22 +201,46 @@ func (c *Client) GetQrCode(loginType, deviceId, deviceName string) (resp GetQRCo
 	return
 }
 
-func (c *Client) LoginGetQRMac(deviceId, deviceName string) (resp GetQRCode, err error) {
+func (c *Client) LoginGetQRMac(deviceId, deviceName string, proxy *ProxyInfo) (resp GetQRCode, err error) {
 	var result ClientResponse[GetQRCode]
+
+	// 构建请求体，包含代理信息
+	requestBody := LoginGetQRRequest{
+		DeviceID:   deviceId,
+		DeviceName: deviceName,
+		// LoginType 在Mac版本中可能不需要，但保持结构体一致性
+	}
+	if proxy != nil {
+		requestBody.Proxy = *proxy
+		log.Printf("[LoginGetQRMac] 使用代理: %s, 用户名: %s", proxy.ProxyIp, proxy.ProxyUser)
+	} else {
+		log.Printf("[LoginGetQRMac] 未使用代理")
+	}
+
+	url := fmt.Sprintf("%s%s", c.Domain.BasePath(), LoginGetQRMac)
+	log.Printf("[LoginGetQRMac] 请求URL: %s", url)
+
 	_, err = c.client.R().
 		SetHeader("Content-Type", "application/json").
-		SetBody(LoginGetQRRequest{
-			DeviceID:   deviceId,
-			DeviceName: deviceName,
-		}).
+		SetBody(requestBody).
 		SetResult(&result).
-		Post(fmt.Sprintf("%s%s", c.Domain.BasePath(), LoginGetQRMac))
+		Post(url)
 	if err = result.CheckError(err); err != nil {
 		return
 	}
 	result.Data.Data62 = result.Data62
 	resp = result.Data
 	return
+}
+
+// GetQrCodeCompat 保持向后兼容的无代理版本
+func (c *Client) GetQrCodeCompat(loginType, deviceId, deviceName string) (resp GetQRCode, err error) {
+	return c.GetQrCode(loginType, deviceId, deviceName, nil)
+}
+
+// LoginGetQRMacCompat 保持向后兼容的无代理版本
+func (c *Client) LoginGetQRMacCompat(deviceId, deviceName string) (resp GetQRCode, err error) {
+	return c.LoginGetQRMac(deviceId, deviceName, nil)
 }
 
 func (c *Client) CheckLoginUuid(uuid string) (resp CheckUuid, err error) {
@@ -269,11 +324,21 @@ func (c *Client) LoginGetA16Data(wxid string) (resp string, err error) {
 
 func (c *Client) LoginData62SMSApply(req Data62LoginRequest) (resp UnifyAuthResponse, err error) {
 	var result ClientResponse[UnifyAuthResponse]
+
+	if req.Proxy.ProxyIp != "" {
+		log.Printf("[LoginData62SMSApply] 使用代理: %s, 用户名: %s", req.Proxy.ProxyIp, req.Proxy.ProxyUser)
+	} else {
+		log.Printf("[LoginData62SMSApply] 未使用代理")
+	}
+
+	url := fmt.Sprintf("%s%s", c.Domain.BasePath(), LoginData62SMSApply)
+	log.Printf("[LoginData62SMSApply] 请求URL: %s", url)
+
 	_, err = c.client.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(req).
 		SetResult(&result).
-		Post(fmt.Sprintf("%s%s", c.Domain.BasePath(), LoginData62SMSApply))
+		Post(url)
 	if err = result.CheckError(err); err != nil {
 		err2 := c.BaseResponseErrCheck(result.Data.BaseResponse)
 		if err2 != nil {
@@ -289,11 +354,21 @@ func (c *Client) LoginData62SMSApply(req Data62LoginRequest) (resp UnifyAuthResp
 // LoginData62SMSAgain 重新发送验证码
 func (c *Client) LoginData62SMSAgain(req LoginData62SMSAgainRequest) (resp string, err error) {
 	var result ClientResponse[string]
+
+	if req.Proxy.ProxyIp != "" {
+		log.Printf("[LoginData62SMSAgain] 使用代理: %s, 用户名: %s", req.Proxy.ProxyIp, req.Proxy.ProxyUser)
+	} else {
+		log.Printf("[LoginData62SMSAgain] 未使用代理")
+	}
+
+	url := fmt.Sprintf("%s%s", c.Domain.BasePath(), LoginData62SMSAgain)
+	log.Printf("[LoginData62SMSAgain] 请求URL: %s", url)
+
 	_, err = c.client.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(req).
 		SetResult(&result).
-		Post(fmt.Sprintf("%s%s", c.Domain.BasePath(), LoginData62SMSAgain))
+		Post(url)
 	if err = result.CheckError(err); err != nil {
 		return
 	}
@@ -304,11 +379,21 @@ func (c *Client) LoginData62SMSAgain(req LoginData62SMSAgainRequest) (resp strin
 // LoginData62SMSVerify 短信验证
 func (c *Client) LoginData62SMSVerify(req LoginData62SMSVerifyRequest) (resp string, err error) {
 	var result ClientResponse[string]
+
+	if req.Proxy.ProxyIp != "" {
+		log.Printf("[LoginData62SMSVerify] 使用代理: %s, 用户名: %s", req.Proxy.ProxyIp, req.Proxy.ProxyUser)
+	} else {
+		log.Printf("[LoginData62SMSVerify] 未使用代理")
+	}
+
+	url := fmt.Sprintf("%s%s", c.Domain.BasePath(), LoginData62SMSVerify)
+	log.Printf("[LoginData62SMSVerify] 请求URL: %s", url)
+
 	_, err = c.client.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(req).
 		SetResult(&result).
-		Post(fmt.Sprintf("%s%s", c.Domain.BasePath(), LoginData62SMSVerify))
+		Post(url)
 	if err = result.CheckError(err); err != nil {
 		return
 	}
@@ -318,11 +403,21 @@ func (c *Client) LoginData62SMSVerify(req LoginData62SMSVerifyRequest) (resp str
 
 func (c *Client) LoginA16Data(req A16LoginRequest) (resp UnifyAuthResponse, err error) {
 	var result ClientResponse[UnifyAuthResponse]
+
+	if req.Proxy.ProxyIp != "" {
+		log.Printf("[LoginA16Data] 使用代理: %s, 用户名: %s", req.Proxy.ProxyIp, req.Proxy.ProxyUser)
+	} else {
+		log.Printf("[LoginA16Data] 未使用代理")
+	}
+
+	url := fmt.Sprintf("%s%s", c.Domain.BasePath(), LoginA16Data)
+	log.Printf("[LoginA16Data] 请求URL: %s", url)
+
 	_, err = c.client.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(req).
 		SetResult(&result).
-		Post(fmt.Sprintf("%s%s", c.Domain.BasePath(), LoginA16Data))
+		Post(url)
 	if err = result.CheckError(err); err != nil {
 		err2 := c.BaseResponseErrCheck(result.Data.BaseResponse)
 		if err2 != nil {

@@ -35,7 +35,7 @@ func (s *LoginService) Online() error {
 	log.Println("LoginService.Online() 开始执行...")
 	vars.RobotRuntime.Status = model.RobotStatusOnline
 	log.Println("设置机器人状态为在线")
-	
+
 	// 启动定时任务
 	if vars.CronManager != nil {
 		log.Println("启动定时任务管理器...")
@@ -43,18 +43,18 @@ func (s *LoginService) Online() error {
 		vars.CronManager.Start()
 		log.Println("定时任务管理器启动完成")
 	}
-	
+
 	if vars.RobotRuntime.SyncMomentCancel != nil {
 		log.Println("取消朋友圈同步...")
 		vars.RobotRuntime.SyncMomentCancel()
 	}
-	
+
 	log.Println("启动朋友圈同步协程...")
 	go func() {
 		time.Sleep(1 * time.Second)
 		NewMomentsService(context.Background()).SyncMomentStart()
 	}()
-	
+
 	// 开启自动心跳，包括长连接自动同步消息
 	log.Println("开始启动自动心跳...")
 	err := s.AutoHeartBeat()
@@ -159,13 +159,17 @@ func (s *LoginService) HeartbeatStart() {
 }
 
 func (s *LoginService) Login(loginType string, isPretender bool) (loginData robot.LoginResponse, err error) {
+	return s.LoginWithProxy(loginType, isPretender, nil)
+}
+
+func (s *LoginService) LoginWithProxy(loginType string, isPretender bool, proxy *robot.ProxyInfo) (loginData robot.LoginResponse, err error) {
 	if vars.RobotRuntime.Status == model.RobotStatusOnline {
 		err := s.Logout()
 		if err != nil {
 			log.Printf("登出失败: %v\n", err)
 		}
 	}
-	loginData, err = vars.RobotRuntime.Login(loginType, isPretender)
+	loginData, err = vars.RobotRuntime.LoginWithProxy(loginType, isPretender, proxy)
 	return
 }
 

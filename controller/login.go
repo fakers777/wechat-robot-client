@@ -39,8 +39,9 @@ func (lg *Login) GetCachedInfo(c *gin.Context) {
 
 func (lg *Login) Login(c *gin.Context) {
 	var req struct {
-		LoginType   string `form:"login_type" json:"login_type" binding:"required"`
-		IsPretender bool   `form:"is_pretender" json:"is_pretender"`
+		LoginType   string           `form:"login_type" json:"login_type" binding:"required"`
+		IsPretender bool             `form:"is_pretender" json:"is_pretender"`
+		Proxy       *robot.ProxyInfo `form:"proxy" json:"proxy"`
 	}
 	resp := appx.NewResponse(c)
 	if ok, err := appx.BindAndValid(c, &req); !ok || err != nil {
@@ -50,7 +51,7 @@ func (lg *Login) Login(c *gin.Context) {
 	if req.LoginType == "ipad" {
 		req.IsPretender = false
 	}
-	data, err := service.NewLoginService(c).Login(req.LoginType, req.IsPretender)
+	data, err := service.NewLoginService(c).LoginWithProxy(req.LoginType, req.IsPretender, req.Proxy)
 	if err != nil {
 		resp.ToErrorResponse(err)
 		return

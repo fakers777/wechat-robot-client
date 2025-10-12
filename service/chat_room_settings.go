@@ -54,22 +54,8 @@ func (s *ChatRoomSettingsService) InitByMessage(message *model.Message) error {
 
 	// 如果群聊设置不存在，创建默认设置
 	if chatRoomSettings == nil {
-		log.Printf("群聊 %s 设置不存在，创建默认设置", message.FromWxID)
-		aiEnabled := true
-		aiTrigger := "AI"
-		chatRoomSettings = &model.ChatRoomSettings{
-			ChatRoomID:    message.FromWxID,
-			ChatAIEnabled: &aiEnabled,
-			ChatAITrigger: &aiTrigger,
-		}
-		// 保存默认设置到数据库
-		err = s.crsRespo.Create(chatRoomSettings)
-		if err != nil {
-			log.Printf("保存默认群聊设置失败: %v", err)
-			// 即使保存失败，也继续使用默认设置
-		} else {
-			log.Printf("成功创建群聊 %s 的默认设置", message.FromWxID)
-		}
+		log.Printf("群聊 %s 设置不存在", message.FromWxID)
+
 	}
 
 	s.chatRoomSettings = chatRoomSettings
