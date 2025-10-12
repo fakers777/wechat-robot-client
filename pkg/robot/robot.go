@@ -75,45 +75,14 @@ func (r *Robot) IsLoggedIn() bool {
 	return err == nil
 }
 
-func (r *Robot) GetQrCode(loginType string, isPretender bool) (loginData LoginResponse, err error) {
-	var resp GetQRCode
-	switch loginType {
-	case "mac":
-		if isPretender {
-			resp, err = r.Client.GetQrCode(loginType, r.DeviceID, r.DeviceName)
-		} else {
-			resp, err = r.Client.LoginGetQRMac(r.DeviceID, "Mac Book Pro")
-		}
-		if err != nil {
-			return
-		}
-	default:
-		resp, err = r.Client.GetQrCode(loginType, r.DeviceID, r.DeviceName)
-		if err != nil {
-			return
-		}
-	}
-	if resp.Uuid != "" {
-		loginData.Uuid = resp.Uuid
-		loginData.Data62 = resp.Data62
-		return
-	}
-	err = errors.New("获取二维码失败")
-	return
-}
-
-func (r *Robot) GetProfile(wxid string) (GetProfileResponse, error) {
-	return r.Client.GetProfile(wxid)
-}
-
-func (r *Robot) GetCachedInfo() (LoginData, error) {
-	return r.Client.GetCachedInfo(r.WxID)
-}
-
 func (r *Robot) Login(loginType string, isPretender bool) (loginData LoginResponse, err error) {
+	return r.LoginWithProxy(loginType, isPretender, nil)
+}
+
+func (r *Robot) LoginWithProxy(loginType string, isPretender bool, proxy *ProxyInfo) (loginData LoginResponse, err error) {
 	if isPretender {
 		// 二维码登陆
-		loginData, err = r.GetQrCode(loginType, true)
+		loginData, err = r.GetQrCodeWithProxy(loginType, true, proxy)
 		return
 	}
 	// 尝试唤醒登陆
@@ -127,15 +96,15 @@ func (r *Robot) Login(loginType string, isPretender bool) (loginData LoginRespon
 		}
 		// 唤醒登陆
 		var resp QrCode
-		resp, err = r.Client.AwakenLogin(r.WxID)
+		resp, err = r.Client.AwakenLogin(r.WxID, proxy)
 		if err != nil {
 			// 如果唤醒失败，尝试获取二维码
-			loginData, err = r.GetQrCode(loginType, false)
+			loginData, err = r.GetQrCodeWithProxy(loginType, false, proxy)
 			return
 		}
 		if resp.Uuid == "" {
 			// 如果唤醒失败，尝试获取二维码
-			loginData, err = r.GetQrCode(loginType, false)
+			loginData, err = r.GetQrCodeWithProxy(loginType, false, proxy)
 			return
 		}
 		// 唤醒登陆成功
@@ -144,8 +113,49 @@ func (r *Robot) Login(loginType string, isPretender bool) (loginData LoginRespon
 		return
 	}
 	// 二维码登陆
-	loginData, err = r.GetQrCode(loginType, false)
+	loginData, err = r.GetQrCodeWithProxy(loginType, false, proxy)
 	return
+}
+
+// GetQrCodeWithProxy 获取二维码（支持代理）
+func (r *Robot) GetQrCodeWithProxy(loginType string, isPretender bool, proxy *ProxyInfo) (loginData LoginResponse, err error) {
+	var resp GetQRCode
+	switch loginType {
+	case "mac":
+		if isPretender {
+			resp, err = r.Client.GetQrCode(loginType, r.DeviceID, r.DeviceName, proxy)
+		} else {
+			resp, err = r.Client.LoginGetQRMac(r.DeviceID, "Mac Book Pro", proxy)
+		}
+		if err != nil {
+			return
+		}
+	default:
+		resp, err = r.Client.GetQrCode(loginType, r.DeviceID, r.DeviceName, proxy)
+		if err != nil {
+			return
+		}
+	}
+	if resp.Uuid != "" {
+		loginData.Uuid = resp.Uuid
+		loginData.Data62 = resp.Data62
+		return
+	}
+	err = errors.New("获取二维码失败")
+	return
+}
+
+// GetQrCode 保持向后兼容
+func (r *Robot) GetQrCode(loginType string, isPretender bool) (loginData LoginResponse, err error) {
+	return r.LoginWithProxy(loginType, isPretender, nil)
+}
+
+func (r *Robot) GetProfile(wxid string) (GetProfileResponse, error) {
+	return r.Client.GetProfile(wxid)
+}
+
+func (r *Robot) GetCachedInfo() (LoginData, error) {
+	return r.Client.GetCachedInfo(r.WxID)
 }
 
 func (r *Robot) XmlFastDecoder(xmlStr, target string) string {
@@ -940,6 +950,7 @@ func (r *Robot) LoginData62Login(username, password string) (UnifyAuthResponse, 
 		Password:   password,
 		DeviceName: r.DeviceName,
 		Data62:     data62,
+		Proxy:      ProxyInfo{}, // TODO: 需要从参数传递代理信息
 	})
 }
 
@@ -966,6 +977,7 @@ func (r *Robot) LoginA16Data(username, password string) (UnifyAuthResponse, erro
 		Password:   password,
 		DeviceName: r.DeviceName,
 		A16:        a16,
+		Proxy:      ProxyInfo{}, // TODO: 需要从参数传递代理信息
 	})
 }
 
