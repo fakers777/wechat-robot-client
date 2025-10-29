@@ -26,7 +26,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.ACR_REGISTRY }}/houhou/wechat-robot-client
+          images: ${{ secrets.ACR_REGISTRY }}/khzhao/wechat-robot-client
 
       - name: Build and push Docker image to Alibaba Cloud Registry
         uses: docker/build-push-action@v5
@@ -38,6 +38,6 @@ jobs:
           build-args: |
             VERSION=${{ github.event.release.tag_name }}
           tags: |
-            ${{ secrets.ACR_REGISTRY }}/houhou/wechat-robot-client:${{ github.event.release.tag_name }}
-            ${{ secrets.ACR_REGISTRY }}/houhou/wechat-robot-client:latest
+            ${{ secrets.ACR_REGISTRY }}/khzhao/wechat-robot-client:${{ github.event.release.tag_name }}
+            ${{ secrets.ACR_REGISTRY }}/khzhao/wechat-robot-client:latest
           labels: ${{ steps.meta.outputs.labels }}
