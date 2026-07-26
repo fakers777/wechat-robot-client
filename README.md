@@ -18,23 +18,47 @@
 
 [https://wechat-doc.houhoukang.com/](https://wechat-doc.houhoukang.com/)
 
+## Pro 版本已经上线
+
+### 新特性
+
+- 支持设置大模型的推理强度: low high max 等等
+
+- 内置搜索文件 / 写入、编辑文件 工具
+
+- 开放发送远程文件接口
+
+- MCP 工具、Skills 工具、内置工具支持按群/好友启用/禁用，支持设置工具是否要开启审核，支持给工具批量设置权限
+
+- 支持设置定时任务，在制定的群/好友开启定时任务，支持定时发送固定文本/图片艾特指定的人/所有人，支持定时触发大模型
+
+- 人设管理支持批量设置人设
+
+- 机器人出租模式，支持按群开启订阅模式
+
+- 优化群聊总结图片样式
+
+- 优化群聊排行榜交互，由发送文本改为发送图片
+
+- 优化早安设置，早安图片支持自定义
+
+- 优化下载文件可能导致文件损坏的问题
+
+- 新增了几个内置 Skills，支持总结 PDF Excel Word
+
 ## 官方交流群
 
 <table>
   <thead>
     <tr>
       <th>官方交流群</th>
-      <th>官方交流群2</th>
       <th>微信赞赏码</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>
-        <img src="https://img.houhoukang.com/char-room-qrcode.jpg?v=20260705" alt="官方交流群" width="300" height="300">
-      </td>
-      <td>
-        <img src="https://img.houhoukang.com/char-room-qrcode-2.jpg?v=20260705" alt="官方交流群" width="300" height="300">
+        <img src="https://img.houhoukang.com/char-room-qrcode.jpg?v=20260726" alt="官方交流群" width="300" height="300">
       </td>
       <td>
         <img src="https://img.houhoukang.com/weChat-robot-pay.jpg" alt="赞赏码" width="300" height="300">
