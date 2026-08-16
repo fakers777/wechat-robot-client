@@ -50,19 +50,25 @@
 
 - 重构了记忆模块，优化记忆准确性、优化群成员关系建模，能描述更复杂的群成员关系
 
+- 群里机器人支持仅管理员能触发，需要先在群聊`查看群成员`那里将指定群成员设置为管理员
+
 ## 官方交流群
 
 <table>
   <thead>
     <tr>
       <th>官方交流群</th>
+      <th>官方交流群 2</th>
       <th>微信赞赏码</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>
-        <img src="https://img.houhoukang.com/char-room-qrcode.jpg?v=20260809" alt="官方交流群" width="300" height="300">
+        <img src="https://img.houhoukang.com/char-room-qrcode.jpg?v=20260816" alt="官方交流群" width="300" height="300">
+      </td>
+      <td>
+        <img src="https://img.houhoukang.com/char-room-qrcode-2.jpg?v=20260816" alt="官方交流群" width="300" height="300">
       </td>
       <td>
         <img src="https://img.houhoukang.com/weChat-robot-pay.jpg" alt="赞赏码" width="300" height="300">
