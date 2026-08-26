@@ -14,6 +14,8 @@
 
 **本地部署该如何部署，请看下方的在线文档，在已经安装了 Docker Git 的情况下，十分钟部署成功，部署前务必仔细阅读在线文档。**
 
+<p style="color: red;">111</p>
+
 ## 在线文档
 
 [https://wechat-doc.houhoukang.com/](https://wechat-doc.houhoukang.com/)
