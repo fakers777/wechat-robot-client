@@ -198,6 +198,7 @@ services:
       GIN_MODE: release
       TZ: Asia/Shanghai
       DOCKER_NETWORK: wechat-robot
+      ROBOT_SECRET_KEY: ys7Yn105ZfPVasQBG/NDoEDf2KwOsp9tx8UHfnQPkNE= # 可自行修改，不得少于 32 位，建议使用 openssl rand -base64 32 重新生成一个
       SESSION_SECRET: sessionid_123456 # 可自行修改 随便设置个uuid即可
       OPENAI_API_KEY: sk-123456 # 自行修改
       WECHAT_SERVER_ADDRESS: http://wechat-server:3000
