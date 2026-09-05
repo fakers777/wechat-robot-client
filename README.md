@@ -52,6 +52,10 @@
 
 - 群里机器人支持仅管理员能触发，需要先在群聊`查看群成员`那里将指定群成员设置为管理员
 
+- 修复了协议频繁掉线的问题
+
+- 支持子智能体编排
+
 ## 官方交流群
 
 <table>
@@ -64,7 +68,7 @@
   <tbody>
     <tr>
       <td>
-        <img src="https://img.houhoukang.com/char-room-qrcode.jpg?v=20260828-1" alt="官方交流群" width="300" height="300">
+        <img src="https://img.houhoukang.com/char-room-qrcode.jpg?v=20260905" alt="官方交流群" width="300" height="300">
       </td>
       <td>
         <img src="https://img.houhoukang.com/weChat-robot-pay.jpg" alt="赞赏码" width="300" height="300">
